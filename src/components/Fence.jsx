@@ -1,6 +1,10 @@
 import { Fragment } from 'react'
 import Highlight, { defaultProps } from 'prism-react-renderer'
 
+import Prism from "prism-react-renderer/prism";
+(typeof global !== "undefined" ? global : window).Prism = Prism;
+require("prismjs/components/prism-dart")
+
 export function Fence({ children, language }) {
   return (
     <Highlight

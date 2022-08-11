@@ -1,6 +1,6 @@
-# Tunder Framework Docs
+# Tunder Framework Documenation
 
-Please visit: [tunder.dev](https://tunder.dev/)
+Please visit: [tunder.dev](https://tunder-docs.vercel.app/) to access this project live.
 
 ## Getting started
 
