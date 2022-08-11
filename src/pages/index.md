@@ -1,7 +1,7 @@
 ---
 title: Getting started
 pageTitle: Tunder
-description: The Dart Framework to build web applications
+description: The Dart Framework For App Creators
 ---
 
 Learn how to get CacheAdvance set up in your project in under thirty minutes or it's free. {% .lead %}
