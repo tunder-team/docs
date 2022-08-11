@@ -4,11 +4,11 @@ pageTitle: Tunder
 description: The Dart Framework For App Creators
 ---
 
-Learn how to get CacheAdvance set up in your project in under thirty minutes or it's free. {% .lead %}
+Learn how to get started with Tunder Framework in just a few minutes. {% .lead %}
 
 {% quick-links %}
 
-{% quick-link title="Installation" icon="installation" href="/" description="Step-by-step guides to setting up your system and installing the library." /%}
+{% quick-link title="Installation" icon="installation" href="/docs/installation" description="Step-by-step guides to setting up your system and installing the library." /%}
 
 {% quick-link title="Architecture guide" icon="presets" href="/" description="Learn how the internals work and contribute." /%}
 
@@ -18,91 +18,195 @@ Learn how to get CacheAdvance set up in your project in under thirty minutes or 
 
 {% /quick-links %}
 
-Possimus saepe veritatis sint nobis et quam eos. Architecto consequatur odit perferendis fuga eveniet possimus rerum cumque. Ea deleniti voluptatum deserunt voluptatibus ut non iste.
+
+## Why Tunder?
+
+Tunder is a framework for creating server side apps that are easy to use and easy to maintain. It was heavily inspired by
+some famous frameworks like [Laravel](https://laravel.com/) for PHP, [Ruby on Rails](https://rubyonrails.org/) for Ruby
+and [Adonisjs](https://adonisjs.com/) for Node.js. So Tunder was created to be the referenced framework for Dart language.
 
 ---
 
-## Quick start
+## Tunder at a Glance
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur.
+Keep reading this page if you want to take a look at a brief summary of how to use Tunder as your backend framework for dart
+language.
 
-### Installing dependencies
+### Route System
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
-
-```shell
-npm install @tailwindlabs/cache-advance
-```
-
-Possimus saepe veritatis sint nobis et quam eos. Architecto consequatur odit perferendis fuga eveniet possimus rerum cumque. Ea deleniti voluptatum deserunt voluptatibus ut non iste. Provident nam asperiores vel laboriosam omnis ducimus enim nesciunt quaerat. Minus tempora cupiditate est quod.
-
-### Configuring the library
-
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
+Tunder has it's own route system implemented from scratch using the core `dart:io` library. Here is how you can define
+your routes:
 
 ```dart
-class SomeClass {
-  late final field = 'some value';
+web() {
+  Route.get('/', () => 'Hello World');
+  // or
+  Route.get('/', HomeController, 'index');
+}
+```
+
+Tunder will automatically create an instance of the `HomeController` class and inject all dependencies needed into it.
+
+{% callout title="Why do we use dart:mirrors?" %}
+There is a known issue with mirrors library from the Dart team that we are aware of. However we are still using mirrors because
+we need reflection system in Dart, and for now, mirrors is the only option to use reflection without generators.
+We don't use generators because they don't provide a good Developer Experience (DX) and overtime increases build time
+to your app which is something that we're avoiding at most. Read this issue on Github for further details and examples
+about using mirrors, it's pros and cons etc.
+{% /callout %}
+
+### Controllers
+
+Controllers is one important peace of a MVC framework like Tunder. Here is how a controller looks like:
+
+```dart
+import 'package:tunder/http.dart';
+
+class HomeController extends Controller {
   index() {
-    return 'Hello World';
+    var date = 3.days.ago; // did you know that you can use dates like this? Looks like rails right? ;D
+
+    return 'Hello World! Three days ago was: ${date}';
   }
 }
 ```
 
-Possimus saepe veritatis sint nobis et quam eos. Architecto consequatur odit perferendis fuga eveniet possimus rerum cumque. Ea deleniti voluptatum deserunt voluptatibus ut non iste. Provident nam asperiores vel laboriosam omnis ducimus enim nesciunt quaerat. Minus tempora cupiditate est quod.
+### Database Migrations
 
-{% callout title="You should know!" %}
-This is what a disclaimer message looks like. You might want to include inline `code` in it. Or maybe you’ll want to include a [link](/) in it. I don’t think we should get too carried away with other scenarios like lists or tables — that would be silly.
-{% /callout %}
+Tunder provides a database migration system out of the box and here is sample migratino for the users table:
+
+```dart
+import 'package:tunder/database.dart';
+
+class Migration_2022_08_08_143401 extends Migration {
+  final id = '2022_08_08_143401';
+  final name = 'Create users table';
+
+  up() async {
+    await Schema.create('users', (table) {
+      table
+        ..id()
+        ..string('name').notNullable()
+        ..string('email').notNullable().unique()
+        ..string('password').nullable()
+        ..json('settings').notNullable().defaultValue('{}')
+        ..softDeletes()
+        ..timestamps();
+    });
+  }
+
+  down() async {
+    await Schema.drop('users');
+  }
+}
+
+```
+
+### Database Queries
+
+Let's retrieve the users table you could create in a new controller for users:
+
+```dart
+import 'package:tunder/database.dart';
+import 'package:tunder/http.dart';
+
+class UsersController extends Controller {
+  index() async {
+    final query = Query('users')
+      ..where('created_at').between(3.days.ago, DateTime.now())
+      ..where('email').endsWith('@domain.com');
+
+    return query.paginate();
+  }
+}
+```
+
+This will return a json string in the following format:
+
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john.doe@domain.com",
+      "created_at": "...",
+      "udpated_at": "...",
+      "deleted_at": null
+    }
+    ...
+  ],
+  "meta": {
+    "currentPage": 1,
+    "perPage": 10,
+    "total": 15,
+    "from": 1,
+    "to": 10,
+    "lastPage": 2,
+  }
+}
+```
+
+### Middlewares
+
+The middleware system is super simple and works out of the box with the Routing sysmtem. Actually, the routing system
+was designed with Middlewares in mind. So here is an example of a Middleware class:
+
+```dart
+import 'dart:async';
+
+import 'package:tunder/http.dart';
+
+class ExampleMiddleware extends Middleware {
+  @override
+  FutureOr<Response> handle(Request request, next) async {
+    // do something before the request is handled
+    Response response = await next(request);
+    // do something after the request is handled with the response
+    return response;
+  }
+}
+```
+
+Now, here's how you can use your new middleware in your routes definitions:
+
+```dart
+web() {
+  Route.middleware(ExampleMiddleware).group(() {
+    Route.get('users', UsersController, 'index').name('users.index');
+    Route.post('users', UsersController, 'store').name('users.store');
+    ...
+  });
+}
+```
+
 
 ---
 
-## Basic usage
+## More
 
-Praesentium laudantium magni. Consequatur reiciendis aliquid nihil iusto ut in et. Quisquam ut et aliquid occaecati. Culpa veniam aut et voluptates amet perspiciatis. Qui exercitationem in qui. Vel qui dignissimos sit quae distinctio.
+This is just the basics of the Framework. There's a lot more things to come with Tunder that you will definitely love.
+Stay tunned with our channel and community
 
-### Your first cache
+### How to Submit a Bug
 
-Minima vel non iste debitis. Consequatur repudiandae et quod accusamus sit molestias consequatur aperiam. Et sequi ipsa eum voluptatibus ipsam. Et quisquam ut.
+This framework is actively under development and sometimes you might face some bugs. If that's the case please feel free
+to start a discussion on [Github Discussions](https://github.com/tunder-team/tunder/discussions/). We have a "Bug" discussion
+category where you can submit your bug there.
 
-Qui quae esse aspernatur fugit possimus. Quam sed molestiae temporibus. Eum perferendis dignissimos provident ea et. Et repudiandae quasi accusamus consequatur dolore nobis. Quia reiciendis necessitatibus a blanditiis iste quia. Ut quis et amet praesentium sapiente.
+### Join Our Discord Community
 
-Atque eos laudantium. Optio odit aspernatur consequuntur corporis soluta quidem sunt aut doloribus. Laudantium assumenda commodi.
+We have an official Discord Community server to discuss everything related to the framework and to help each other be
+app creators with this amazing programming language Dart. Feel free to join and leave us at your pleasure. Click on
+this [link to join our Discord channel](https://discord.gg/WMGEb87syE).
 
-### Clearing the cache
+### Show Some Love?
 
-Vel aut velit sit dolor aut suscipit at veritatis voluptas. Laudantium tempore praesentium. Qui ut voluptatem.
+There're few ways to show your love and appreciation for this project:
 
-Ea est autem fugiat velit esse a alias earum. Dolore non amet soluta eos libero est. Consequatur qui aliquam qui odit eligendi ut impedit illo dignissimos.
+1. Share this page with everybody!
+2. Give a Star in [Github repository](https://github.com/tunder-team/tunder)
+3. Join the community on [Discord](https://discord.gg/WMGEb87syE)
+4. Become a [sponsor](https://github.com/marcotas) of the framework on [Github](https://github.com/marcotas)
 
-Ut dolore qui aut nam. Natus temporibus nisi voluptatum labore est ex error vel officia. Vero repellendus ut. Suscipit voluptate et placeat. Eius quo corporis ab et consequatur quisquam. Nihil officia facere dolorem occaecati alias deleniti deleniti in.
-
-### Adding middleware
-
-Officia nobis tempora maiores id iusto magni reprehenderit velit. Quae dolores inventore molestiae perspiciatis aut. Quis sequi officia quasi rem officiis officiis. Nesciunt ut cupiditate. Sunt aliquid explicabo enim ipsa eum recusandae. Vitae sunt eligendi et non beatae minima aut.
-
-Harum perferendis aut qui quibusdam tempore laboriosam voluptatum qui sed. Amet error amet totam exercitationem aut corporis accusantium dolorum. Perspiciatis aut animi et. Sed unde error ut aut rerum.
-
-Ut quo libero aperiam mollitia est repudiandae quaerat corrupti explicabo. Voluptas accusantium sed et doloribus voluptatem fugiat a mollitia. Numquam est magnam dolorem asperiores fugiat. Soluta et fuga amet alias temporibus quasi velit. Laudantium voluptatum perspiciatis doloribus quasi facere. Eveniet deleniti veniam et quia veritatis minus veniam perspiciatis.
-
----
-
-## Getting help
-
-Consequuntur et aut quisquam et qui consequatur eligendi. Necessitatibus dolorem sit. Excepturi cumque quibusdam soluta ullam rerum voluptatibus. Porro illo sequi consequatur nisi numquam nisi autem. Ut necessitatibus aut. Veniam ipsa voluptatem sed.
-
-### Submit an issue
-
-Inventore et aut minus ut voluptatem nihil commodi doloribus consequatur. Facilis perferendis nihil sit aut aspernatur iure ut dolores et. Aspernatur odit dignissimos. Aut qui est sint sint.
-
-Facere aliquam qui. Dolorem officia ipsam adipisci qui molestiae. Error voluptatem reprehenderit ex.
-
-Consequatur enim quia maiores aperiam et ipsum dicta. Quam ut sit facere sit quae. Eligendi veritatis aut ut veritatis iste ut adipisci illo.
-
-### Join the community
-
-Praesentium facilis iste aliquid quo quia a excepturi. Fuga reprehenderit illo sequi voluptatem voluptatem omnis. Id quia consequatur rerum consectetur eligendi et omnis. Voluptates iusto labore possimus provident praesentium id vel harum quisquam. Voluptatem provident corrupti.
-
-Eum et ut. Qui facilis est ipsa. Non facere quia sequi commodi autem. Dicta autem sit sequi omnis impedit. Eligendi amet dolorum magnam repudiandae in a.
-
-Molestiae iusto ut exercitationem dolorem unde iusto tempora atque nihil. Voluptatem velit facere laboriosam nobis ea. Consequatur rerum velit ipsum ipsam. Et qui saepe consequatur minima laborum tempore voluptatum et. Quia eveniet eaque sequi consequatur nihil eos.
+I'm already your fan if you read this line. :heart: :wink:
