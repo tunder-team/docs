@@ -95,7 +95,7 @@ function Header({ navigation }) {
       className={clsx(
         'sticky top-0 z-50 flex flex-wrap items-center justify-between bg-white px-4 py-5 shadow-md shadow-slate-900/5 transition duration-500 dark:shadow-none sm:px-6 lg:px-8',
         isScrolled
-          ? 'dark:bg-slate-900/95 dark:backdrop-blur dark:[@supports(backdrop-filter:blur(0))]:bg-slate-900/75'
+          ? 'dark:bg-dark-800/95 dark:backdrop-blur dark:[@supports(backdrop-filter:blur(0))]:bg-dark-800/75'
           : 'dark:bg-transparent'
       )}
     >
@@ -105,7 +105,7 @@ function Header({ navigation }) {
       <div className="relative flex flex-grow basis-0 items-center">
         <Link href="/" aria-label="Home page">
           <Logomark className="h-7 w-7 lg:hidden" />
-          <Logo className="hidden h-7 w-auto fill-slate-700 dark:fill-primary-100 lg:block" />
+          <Logo className="hidden h-7 w-auto fill-primary-light-500 dark:text-white dark:fill-primary-500 lg:block" />
         </Link>
       </div>
       <div className="-my-5 mr-6 sm:mr-8 md:mr-0">
@@ -196,8 +196,8 @@ export function Layout({ children, title, tableOfContents }) {
         <div className="hidden lg:relative lg:block lg:flex-none">
           <div className="absolute inset-y-0 right-0 w-[50vw] bg-slate-50 dark:hidden" />
           <div className="sticky top-[4.5rem] -ml-0.5 h-[calc(100vh-4.5rem)] overflow-y-auto py-16 pl-0.5">
-            <div className="absolute top-16 bottom-0 right-0 hidden h-12 w-px bg-gradient-to-t from-slate-800 dark:block" />
-            <div className="absolute top-28 bottom-0 right-0 hidden w-px bg-slate-800 dark:block" />
+            <div className="absolute top-16 bottom-0 right-0 hidden h-12 w-px bg-gradient-to-t from-white/10 dark:block" />
+            <div className="absolute top-28 bottom-0 right-0 hidden w-px bg-white/10 dark:block" />
             <Navigation
               navigation={navigation}
               className="w-64 pr-8 xl:w-72 xl:pr-16"
@@ -209,7 +209,7 @@ export function Layout({ children, title, tableOfContents }) {
             {(title || section) && (
               <header className="mb-9 space-y-1">
                 {section && (
-                  <p className="font-display text-sm font-medium text-primary-500">
+                  <p className="font-display text-sm font-medium text-primary-light-500 dark:text-primary-500">
                     {section.title}
                   </p>
                 )}
@@ -222,7 +222,7 @@ export function Layout({ children, title, tableOfContents }) {
             )}
             <Prose>{children}</Prose>
           </article>
-          <dl className="mt-12 flex border-t border-slate-200 pt-6 dark:border-slate-800">
+          <dl className="mt-12 flex border-t border-slate-200 pt-6 dark:border-dark-800">
             {previousPage && (
               <div>
                 <dt className="font-display text-sm font-medium text-slate-900 dark:text-white">
@@ -273,7 +273,7 @@ export function Layout({ children, title, tableOfContents }) {
                           href={`#${section.id}`}
                           className={clsx(
                             isActive(section)
-                              ? 'text-primary-500'
+                              ? 'text-primary-light-500 dark:text-primary-500'
                               : 'font-normal text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'
                           )}
                         >
@@ -291,7 +291,7 @@ export function Layout({ children, title, tableOfContents }) {
                                 href={`#${subSection.id}`}
                                 className={
                                   isActive(subSection)
-                                    ? 'text-primary-500'
+                                    ? 'text-primary-light-500 dark:text-primary-500'
                                     : 'hover:text-slate-600 dark:hover:text-slate-300'
                                 }
                               >

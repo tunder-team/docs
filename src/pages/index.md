@@ -209,4 +209,4 @@ There're few ways to show your love and appreciation for this project:
 3. Join the community on [Discord](https://discord.gg/WMGEb87syE)
 4. Become a [sponsor](https://github.com/marcotas) of the framework on [Github](https://github.com/marcotas)
 
-I'm already your fan if you read this line. :heart: :wink:
+I'm already your fan if you read this line. ❤️ 😉

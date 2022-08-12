@@ -60,7 +60,7 @@ export default function Document() {
       <Head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </Head>
-      <body className="bg-white dark:bg-slate-900">
+      <body className="bg-white dark:bg-dark-800">
         <Main />
         <NextScript />
       </body>

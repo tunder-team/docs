@@ -107,7 +107,7 @@ export function Hero() {
                         <div
                           className={clsx(
                             'flex items-center rounded-full px-2.5',
-                            tab.isActive && 'bg-slate-800'
+                            tab.isActive && 'bg-dark-800'
                           )}
                         >
                           {tab.name}

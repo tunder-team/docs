@@ -3,20 +3,45 @@ title: Installation
 description: Quidem magni aut exercitationem maxime rerum eos.
 ---
 
-Quasi sapiente voluptates aut minima non doloribus similique quisquam. In quo expedita ipsum nostrum corrupti incidunt. Et aut eligendi ea perferendis.
+Follow the instructions on this page to create a new project with Tunder Framework
 
 ---
 
 ## Requirements
-- You must have [Dart SDK](https://dart.dev/get-dart) installed in your environment.
+- The [Dart SDK](https://dart.dev/get-dart) is all you need to have installed in your environment in order to start creating a Tunder project.
 
 
-## Installing dependencies
+## Install Tunder CLI
 
-Sit commodi iste iure molestias qui amet voluptatem sed quaerat. Nostrum aut pariatur. Sint ipsa praesentium dolor error cumque velit tenetur quaerat exercitationem. Consequatur et cum atque mollitia qui quia necessitatibus.
+[Tunder CLI](https://pub.dev/packages/tunder_cli) is a package with a sole purpose of helping developers to create Tunder projects. To install the CLI run the following command:
 
 ```shell
-npm install @tailwindlabs/cache-advance
+dart pub global activate tunder_cli
 ```
 
-Possimus saepe veritatis sint nobis et quam eos. Architecto consequatur odit perferendis fuga eveniet possimus rerum cumque. Ea deleniti voluptatum deserunt voluptatibus ut non iste. Provident nam asperiores vel laboriosam omnis ducimus enim nesciunt quaerat. Minus tempora cupiditate est quod.
+Now you can create a new Tunder project with the `create` command, like so:
+
+```shell
+tunder create my_first_tunder_app
+```
+
+That's it! Now you can just enjoy building your app.
+
+## How to run?
+
+To run your tunder app you can just use VSCode to run your app in `bin/main.dart` file or run it manually with this command:
+
+```shell
+dart run bin/main.dart
+```
+
+### Hot Reload
+Tunder apps comes with hot reload out of the box thanks to [Shelf Hotreload](https://pub.dev/packages/shelf_hotreload) package. If you're running your app via command line please add the flag `--vm-enable-service` to enable it:
+
+```shell
+dart run bin/main.dart --vm-enable-service
+```
+
+{% callout title="Tip: create an alias to run your apps" %}
+You can create a bash/zsh alias to the `bin/main.dart` file which is the default entry point for dart apps. You can create something like: `alias run="dart run bin/main.dart"` and then you can simply use it for all your Tunder apps. :wink:
+{% /callout %}
